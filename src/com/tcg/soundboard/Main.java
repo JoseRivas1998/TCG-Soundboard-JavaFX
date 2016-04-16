@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -17,6 +19,9 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
+	private MediaPlayer bgSong;
+	boolean bgPlaying;
 	
 	private Sound[] sounds = {
 		new Sound("tru.mp3", "TRU"),
@@ -47,6 +52,10 @@ public class Main extends Application {
 		Stage window = arg0;
 		window.setTitle("TCG Soundboard");
 		
+		bgSong = new MediaPlayer(new Media(getClass().getResource("DarudePumkin.mp3").toString()));
+		bgSong.play();
+		bgPlaying = true;
+		
 		Button[] buttons = new Button[sounds.length];
 		
 		for(int i = 0; i < sounds.length; i++) {
@@ -59,9 +68,23 @@ public class Main extends Application {
 				s.play();
 			}
 		});
+		
+		Button playPause = new Button("Pause Song");
+		playPause.setOnAction(e -> {
+			if(bgPlaying) {
+				bgSong.pause();
+				playPause.setText("Play Soung");
+			} else {
+				bgSong.play();
+				playPause.setText("Pause Soung");
+			}
+			bgPlaying = !bgPlaying;
+		});
+		
 		VBox layout = new VBox(10);
 		layout.getChildren().add(playAll);
 		layout.getChildren().addAll(buttons);
+		layout.getChildren().add(playPause);
 		layout.setAlignment(Pos.CENTER);
 		layout.setPadding(new Insets(20, 20, 20, 20));
 		ScrollPane pane = new ScrollPane();
